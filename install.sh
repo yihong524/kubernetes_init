@@ -17,10 +17,10 @@ REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
 
 # you can get the following values from `kubeadm init` output
 # these are needed when creating node
-MASTERTOKEN=YOUR_TOKEN
-MASTERIP=MASTER_IP
-MASTERPORT=MASTER_PORT
-MASTERHASH=MASTER_HASH
+MASTERTOKEN=6yxa5h.bqr5krvkshwotjd6
+MASTERIP=10.0.2.15
+MASTERPORT=6443
+MASTERHASH=de23e4b0586e9e278087e18da3900f86df28a9899d57e721c57e9dd5a37dcbfe
 
 install_docker() {
   mkdir /etc/docker
@@ -86,18 +86,18 @@ case "$1" in
     add_user_to_docker_group
     install_kube_commands
     ;;
-  "kubernetes-master")
+  "master")
     sysctl net.bridge.bridge-nf-call-iptables=1
     restart_kubelet
     kubeadm init --config $KUBECONF --ignore-preflight-errors=all
     ;;
-  "kubernetes-node")
+  "node")
     sysctl net.bridge.bridge-nf-call-iptables=1
     restart_kubelet
     kubeadm join --token $MASTERTOKEN $MASTERIP:$MASTERPORT --discovery-token-ca-cert-hash sha256:$MASTERHASH
     ;;
   "post")
-    if [[ $EUID -ne 0 ]]; then
+    if [[ $EUID -eq 0 ]]; then
       echo "do not run as root"
       exit
     fi

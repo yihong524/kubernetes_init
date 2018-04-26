@@ -52,18 +52,14 @@ add_user_to_docker_group() {
 }
 
 install_kube_commands() {
-  cat kube_apt_key.gpg | apt-key add -
+  curl -s https://github.com/yihong524/kubernetes_init/raw/master/apt-key.gpg | apt-key add -
   echo "deb [arch=amd64] https://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-$(lsb_release -cs) main" >> /etc/apt/sources.list
   apt-get update && apt-get install -y kubelet kubeadm kubectl
 }
 
-apt-get update && apt-get install -y apt-transport-https curl
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-apt-get update
-apt-get install -y kubelet kubeadm kubectl
+# cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+# deb http://apt.kubernetes.io/ kubernetes-xenial main
+# EOF
 
 restart_kubelet() {
   sed -i "s,ExecStart=$,Environment=\"KUBELET_EXTRA_ARGS=--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1\"\nExecStart=,g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf

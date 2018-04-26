@@ -11,16 +11,16 @@ set -x
 
 USER=vagrant # 用户
 GROUP=vagrant # 组
-CALICO_ADDR=https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+NET_ADD=https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 KUBECONF=./kubeadm.conf # 文件地址, 改成你需要的路径
 REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
 
 # you can get the following values from `kubeadm init` output
 # these are needed when creating node
-MASTERTOKEN=6yxa5h.bqr5krvkshwotjd6
+MASTERTOKEN=zxusd7.wfmajb6esc9svrac
 MASTERIP=10.0.2.15
 MASTERPORT=6443
-MASTERHASH=de23e4b0586e9e278087e18da3900f86df28a9899d57e721c57e9dd5a37dcbfe
+MASTERHASH=f4e86fb748596ccabf3a7a304690dd879e0058ff565a144c149f910cfa429687
 
 install_docker() {
   mkdir /etc/docker
@@ -77,7 +77,7 @@ enable_kubectl() {
 
 # for now, better to download from original registry
 apply_pod_network() {
-  kubectl apply -f $CALICO_ADDR
+  kubectl apply -f $NET_ADD
 }
 
 case "$1" in

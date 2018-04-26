@@ -86,12 +86,12 @@ case "$1" in
     add_user_to_docker_group
     install_kube_commands
     ;;
-  "kubernetes-master")
+  "master")
     sysctl net.bridge.bridge-nf-call-iptables=1
     restart_kubelet
     kubeadm init --config $KUBECONF --ignore-preflight-errors=all
     ;;
-  "kubernetes-node")
+  "node")
     sysctl net.bridge.bridge-nf-call-iptables=1
     restart_kubelet
     kubeadm join --token $MASTERTOKEN $MASTERIP:$MASTERPORT --discovery-token-ca-cert-hash sha256:$MASTERHASH

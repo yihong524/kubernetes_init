@@ -12,7 +12,7 @@ set -x
 USER=ubuntu # 用户
 GROUP=ubuntu # 组
 CALICO_ADDR=https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
-KUBECONF=/home/ubuntu/kubeadm.conf # 文件地址, 改成你需要的路径
+KUBECONF=./kubeadm.conf # 文件地址, 改成你需要的路径
 REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
 
 # you can get the following values from `kubeadm init` output
@@ -31,6 +31,7 @@ install_docker() {
   "graph": "/data/docker"
 }
 EOF
+  sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list
 
   apt-get update
   apt-get install -y \
@@ -52,7 +53,8 @@ add_user_to_docker_group() {
 }
 
 install_kube_commands() {
-  curl -s https://github.com/yihong524/kubernetes_init/raw/master/apt-key.gpg | apt-key add -
+  # curl -s https://github.com/yihong524/kubernetes_init/raw/master/apt-key.gpg | apt-key add -
+  cat apt-key.gpg | apt-key add -
   echo "deb [arch=amd64] https://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-$(lsb_release -cs) main" >> /etc/apt/sources.list
   apt-get update && apt-get install -y kubelet kubeadm kubectl
 }

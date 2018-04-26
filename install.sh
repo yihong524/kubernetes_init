@@ -11,7 +11,7 @@ set -x
 
 USER=ubuntu # 用户
 GROUP=ubuntu # 组
-FLANELADDR=https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+CALICO_ADDR=https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 KUBECONF=/home/ubuntu/kubeadm.conf # 文件地址, 改成你需要的路径
 REGMIRROR=YOUR_OWN_DOCKER_REGISTRY_MIRROR_URL # docker registry mirror 地址
 
@@ -66,8 +66,8 @@ enable_kubectl() {
 }
 
 # for now, better to download from original registry
-apply_flannel() {
-  kubectl apply -f $FLANELADDR
+apply_pod_network() {
+  kubectl apply -f $CALICO_ADDR
 }
 
 case "$1" in
@@ -92,7 +92,7 @@ case "$1" in
       exit
     fi
     enable_kubectl
-    apply_flannel
+    apply_pod_network
     ;;
   *)
     echo "huh ????"

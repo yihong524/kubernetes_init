@@ -9,8 +9,8 @@
 
 set -x
 
-USER=ubuntu # 用户
-GROUP=ubuntu # 组
+USER=vagrant # 用户
+GROUP=vagrant # 组
 CALICO_ADDR=https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 KUBECONF=./kubeadm.conf # 文件地址, 改成你需要的路径
 REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
@@ -89,7 +89,7 @@ case "$1" in
   "master")
     sysctl net.bridge.bridge-nf-call-iptables=1
     restart_kubelet
-    kubeadm init --config $KUBECONF --ignore-preflight-errors=all
+    kubeadm init --config $KUBECONF
     ;;
   "node")
     sysctl net.bridge.bridge-nf-call-iptables=1
@@ -97,10 +97,10 @@ case "$1" in
     kubeadm join --token $MASTERTOKEN $MASTERIP:$MASTERPORT --discovery-token-ca-cert-hash sha256:$MASTERHASH
     ;;
   "post")
-    if [[ $EUID -eq 0 ]]; then
-      echo "do not run as root"
-      exit
-    fi
+    # if [[ $EUID -eq 0 ]]; then
+    #   echo "do not run as root"
+    #   exit
+    # fi
     enable_kubectl
     apply_pod_network
     ;;

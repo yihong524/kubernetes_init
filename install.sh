@@ -13,7 +13,7 @@ USER=ubuntu # 用户
 GROUP=ubuntu # 组
 CALICO_ADDR=https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 KUBECONF=/home/ubuntu/kubeadm.conf # 文件地址, 改成你需要的路径
-REGMIRROR=YOUR_OWN_DOCKER_REGISTRY_MIRROR_URL # docker registry mirror 地址
+REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
 
 # you can get the following values from `kubeadm init` output
 # these are needed when creating node

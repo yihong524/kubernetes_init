@@ -17,10 +17,10 @@ REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
 
 # you can get the following values from `kubeadm init` output
 # these are needed when creating node
-MASTERTOKEN=zxusd7.wfmajb6esc9svrac
-MASTERIP=10.0.2.15
+MASTERTOKEN=km673g.4vwg2mn28uk25n8g
+MASTERIP=192.168.88.10
 MASTERPORT=6443
-MASTERHASH=f4e86fb748596ccabf3a7a304690dd879e0058ff565a144c149f910cfa429687
+MASTERHASH=21689e4eda9380a256396e04406c8253c065f698e93eb38253c37fa202541ea8
 
 install_docker() {
   mkdir /etc/docker
@@ -49,7 +49,7 @@ EOF
 
 add_user_to_docker_group() {
   groupadd docker
-  gpasswd -a $USER docker # ubuntu is the user name
+  sudo gpasswd -a $USER docker # ubuntu is the user name
 }
 
 install_kube_commands() {
@@ -65,8 +65,8 @@ install_kube_commands() {
 
 restart_kubelet() {
   sed -i "s,ExecStart=$,Environment=\"KUBELET_EXTRA_ARGS=--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1\"\nExecStart=,g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-  systemctl daemon-reload
-  systemctl restart kubelet
+  sudo systemctl daemon-reload
+  sudo systemctl restart kubelet
 }
 
 enable_kubectl() {

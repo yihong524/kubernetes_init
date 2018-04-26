@@ -44,7 +44,7 @@ EOF
     "deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) \
     stable"
-  apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 18.03 | head -1 | awk '{print $3}')
+  apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
 }
 
 add_user_to_docker_group() {
@@ -89,7 +89,7 @@ case "$1" in
   "kubernetes-master")
     sysctl net.bridge.bridge-nf-call-iptables=1
     restart_kubelet
-    kubeadm init --config $KUBECONF
+    kubeadm init --config $KUBECONF --ignore-preflight-errors=all
     ;;
   "kubernetes-node")
     sysctl net.bridge.bridge-nf-call-iptables=1

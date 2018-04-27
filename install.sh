@@ -22,16 +22,23 @@ MASTERIP=192.168.200.21
 MASTERPORT=6443
 MASTERHASH=414e600b07d6a0bc4ba2f67b3373cadfdea196be95c63a8ded00755fe0bd89d6
 
+# ubuntu16.04替换成阿里源
+update_apt_source() {
+  # back up
+  sudo cp sources.list sources.list.bak
+  # 替换成阿里源
+  sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list
+  apt-get update
+}
+
+# 安装docker
 install_docker() {
   mkdir /etc/docker
-  mkdir -p /data/docker
-  cat << EOF > /tmp/daemon.json
+  cat << EOF > /etc/docker/daemon.json
 {
   "registry-mirrors": ["$REGMIRROR"],
-  "graph": "/data/docker"
 }
 EOF
-  sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list
 
   apt-get update
   apt-get install -y \
@@ -61,7 +68,7 @@ install_kube_commands() {
   apt-get update && apt-get install -y apt-transport-https
   curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
   cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
-  deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
 EOF
   apt-get update
   apt-get install -y kubelet kubeadm kubectl

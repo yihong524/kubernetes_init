@@ -9,18 +9,18 @@
 
 set -x
 
-USER=vagrant # 用户
-GROUP=vagrant # 组
+USER=oriental # 用户
+GROUP=oriental # 组
 NET_ADD=https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 KUBECONF=./kubeadm.conf # 文件地址, 改成你需要的路径
 REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
 
 # you can get the following values from `kubeadm init` output
 # these are needed when creating node
-MASTERTOKEN=km673g.4vwg2mn28uk25n8g
-MASTERIP=192.168.88.10
+MASTERTOKEN=nifv5r.7fhznip76vpv9bus
+MASTERIP=192.168.200.21
 MASTERPORT=6443
-MASTERHASH=21689e4eda9380a256396e04406c8253c065f698e93eb38253c37fa202541ea8
+MASTERHASH=414e600b07d6a0bc4ba2f67b3373cadfdea196be95c63a8ded00755fe0bd89d6
 
 install_docker() {
   mkdir /etc/docker
@@ -39,7 +39,8 @@ EOF
       ca-certificates \
       curl \
       software-properties-common
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  cat gpg | apt-key add -
   add-apt-repository \
     "deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) \
@@ -54,14 +55,17 @@ add_user_to_docker_group() {
 
 install_kube_commands() {
   # curl -s https://github.com/yihong524/kubernetes_init/raw/master/apt-key.gpg | apt-key add -
-  cat apt-key.gpg | apt-key add -
-  echo "deb [arch=amd64] https://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-$(lsb_release -cs) main" >> /etc/apt/sources.list
-  apt-get update && apt-get install -y kubelet kubeadm kubectl
+  # cat apt-key.gpg | apt-key add -
+  # echo "deb [arch=amd64] https://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-$(lsb_release -cs) main" >> /etc/apt/sources.list
+  # apt-get update && apt-get install -y kubelet kubeadm kubectl
+  apt-get update && apt-get install -y apt-transport-https
+  curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+  cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
+  deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
+  apt-get update
+  apt-get install -y kubelet kubeadm kubectl
 }
-
-# cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-# deb http://apt.kubernetes.io/ kubernetes-xenial main
-# EOF
 
 restart_kubelet() {
   sed -i "s,ExecStart=$,Environment=\"KUBELET_EXTRA_ARGS=--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1\"\nExecStart=,g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf

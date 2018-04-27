@@ -72,7 +72,8 @@ restart_kubelet() {
 enable_kubectl() {
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  # sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  sudo chown $USER:$GROUP $HOME/.kube/config
 }
 
 # for now, better to download from original registry

@@ -9,8 +9,8 @@
 
 set -x
 
-USER=oriental # 用户
-GROUP=oriental # 组
+USER=vagrant # 用户
+GROUP=vagrant # 组
 NET_ADD=https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 KUBECONF=./kubeadm.conf # 文件地址, 改成你需要的路径
 REGMIRROR=https://mytfd7zc.mirror.aliyuncs.com # docker registry mirror 地址
@@ -28,11 +28,12 @@ update_apt_source() {
   sudo cp sources.list sources.list.bak
   # 替换成阿里源
   sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list
-  apt-get update
+  # apt-get update
 }
 
 # 安装docker
 install_docker() {
+  # 配置docker镜像地址
   mkdir /etc/docker
   cat << EOF > /etc/docker/daemon.json
 {
@@ -78,6 +79,7 @@ restart_kubelet() {
   sed -i "s,ExecStart=$,Environment=\"KUBELET_EXTRA_ARGS=--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1\"\nExecStart=,g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
   sudo systemctl daemon-reload
   sudo systemctl restart kubelet
+  # sudo systemctl enable kubelet
 }
 
 enable_kubectl() {
@@ -94,6 +96,7 @@ apply_pod_network() {
 
 case "$1" in
   "pre")
+    update_apt_source
     install_docker
     add_user_to_docker_group
     install_kube_commands
